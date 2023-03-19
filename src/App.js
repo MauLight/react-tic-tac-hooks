@@ -8,59 +8,57 @@ function App() {
 
   //Create state for board, current player, the result of the game, declaring a winner.
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
-  const [player, setPlayer] = useState("X");
+  const [player, setPlayer] = useState("");
   const [result, setResult] = useState({ winner: "none", state: "none" });
   const [winner, setWinner] = useState(false);
   const [title, setTitle] = useState("TIC-TAC-TOE");
-  const [gameStart, setGameStart] = useState(false);
-  const [aiBoard, setAiBoard] = useState([]);
+  const [gameStart, setGameStart] = useState(true);
+  const [aiBoard, setAiBoard] = useState(["", "", "", "", "", "", "", "", ""]);
+  const [winnerBoard, setWinnerBoard] = useState(["", "", "", "", "", "", "", "", ""]);
 
   useEffect(() => { //check if there's a winner or a tie after every render, also changes current player.
-    //setGameStart(false);
+    setWinnerBoard(board);
     checkWinner();
     checkTie();
 
-    /*
-    if (player === "X") {
-      setPlayer("O");
-    }
-    else {
-      setPlayer("X");
-    }; */
-
-  }, [board]);
-
-  useEffect(() => {
-    if (result.state !== 'none') {
-      alert(`Game Over! Winner is ${result.winner}`);
-      setResult({ winner: "none", state: "none" });
-    }
-  });
+  }, [board, winnerBoard]);
 
   const chooseBlock = (block) => { //block = index of block pressed (position between 0 and 8).
-    setGameStart(true);
-    const playerBoard = board.map((val, index) => { //val = X or O chosen.
-      if (index === block && val === "") {
-        return player;
+
+    if (gameStart) {
+      setGameStart(false);
+      setPlayer("Human");
+      const playerBoard = board.map((val, index) => { //val = X or O chosen.
+        if (index === block && val === "") {
+          return "X";
+        }
+        return val;
+      });
+
+      console.log(playerBoard);
+      setBoard(playerBoard);
+
+      if (!winner) {
+        setTimeout(() => setTitle("AI IS THINKING..."), 1000);
+        setTimeout(() => aiChoose(playerBoard), 3000);
+        setTimeout(() => setTitle("YOUR TURN"), 4500);
       }
-      return val;
-    });
-
-    console.log(playerBoard);
-    aiChoose(playerBoard);
+      else {
+        return;
+      }
 
 
-    //aiChoose();
-
+    }
   }
 
   const checkWinner = () => {
+
     Patterns.forEach((pattern) => {
-      const possibleWinner = board[pattern[0]];
+      const possibleWinner = winnerBoard[pattern[0]];
       if (possibleWinner === "") return;
       let foundWinningPattern = true;
       pattern.forEach((val) => {
-        if (board[val] !== possibleWinner) {
+        if (winnerBoard[val] !== possibleWinner) {
           foundWinningPattern = false;
         }
       });
@@ -68,8 +66,18 @@ function App() {
       if (foundWinningPattern) {
         setWinner(true);
         setResult({ winner: player, state: "won" });
+
+
+        console.log(player);
+        console.log(result.winner);
+        alert(`Game Over! Winner is ${player}`);
+        setResult({ winner: "none", state: "none" });
+
+        setTitle("TIC-TAC-TOE");
         setBoard(["", "", "", "", "", "", "", "", ""]);
         setWinner(false);
+        setGameStart(true);
+        foundWinningPattern = false;
 
       }
 
@@ -82,15 +90,27 @@ function App() {
 
     if (checkTie) {
       console.log(board)
+      alert("It's a tie, no winners!")
       setResult({
         winner: "No winners",
         state: "Tie"
       })
+      setResult({ winner: "none", state: "none" });
+
+      setTitle("TIC-TAC-TOE");
+      setBoard(["", "", "", "", "", "", "", "", ""]);
+      setWinner(false);
+      setGameStart(true);
+
     }
   }
 
 
   const aiChoose = (arr) => {
+
+    console.log(winner);
+    setPlayer("AI");
+
     const emptySpots = [];
     let newArr = arr.map(elem => elem);
 
@@ -109,30 +129,11 @@ function App() {
     newArr[emptySpots[randomNumber]] = "O";
     console.log(newArr[emptySpots[randomNumber]]);
     setBoard(newArr);
-    setGameStart(false);
+    setAiBoard(newArr);
+    setGameStart(true);
 
     console.log(newArr);
-
-
-    /*
-        let randomNumber = Math.floor(Math.random() * 8) + 1;
-        if (board[randomNumber] === "" && gameStart && player === "O") {
-          const filterFunction = (value, index) => {
-            if (value === "" && index === randomNumber) {
-              return player;
-            }
-            else {
-              return value;
-            }
-          }
-          const aiBoard = board.map(filterFunction);
-          console.log(aiBoard);
-          setBoard(aiBoard);
-          setGameStart(false); 
-        } */
   }
-
-
 
   return (
     <div className="App">
