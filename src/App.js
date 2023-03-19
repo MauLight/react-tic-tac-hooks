@@ -8,6 +8,7 @@ function App() {
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
   const [player, setPlayer] = useState("O");
   const [result, setResult] = useState({ winner: "none", state: "none" });
+  const [winner, setWinner] = useState(false);
 
   useEffect(() => {
     checkWinner();
@@ -25,6 +26,7 @@ function App() {
   useEffect(() => {
     if (result.state !== 'none') {
       alert(`Game Over! Winner is ${result.winner}`);
+      setResult({ winner: "none", state: "none" });
     }
   })
 
@@ -50,22 +52,22 @@ function App() {
       });
 
       if (foundWinningPattern) {
-        setResult({ winner: player, state: "won" })
+        setWinner(true);
+        setResult({ winner: player, state: "won" });
+        setBoard(["", "", "", "", "", "", "", "", ""]);
+        setWinner(false);
+
       }
 
     })
   }
 
   const checkTie = () => {
-    let filled = true;
-    board.forEach((block) => {
-      if(block === "") {
-        filled = false;
-      }
-    })
+    //let filled = false;
+    const checkTie = board.every((block) => block !== "" && winner == false);
 
-    if (filled) {
-      console.log(board);
+    if (checkTie) {
+      console.log(board)
       setResult({
         winner: "No winners",
         state: "Tie"
