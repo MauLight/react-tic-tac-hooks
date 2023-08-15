@@ -3,7 +3,7 @@ import "../App.css";
 
 export const Block = ({val, chooseBlock}) => {
     return (
-        <div className="block" onClick={chooseBlock}>
+        <div className="block  rounded-3" onClick={chooseBlock}>
             {val}
         </div>
     )

@@ -1,4 +1,6 @@
-.App {
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+
+.Game {
   width: 100vw;
   height: 100vh;
   display: grid;
@@ -14,13 +16,16 @@ body {
 .board {
   width: 500px;
   height: 500px;
-  background-color: tomato;
+  background-color: black;
   border: 1px solid black;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
-.row {
+.boardrow {
+  background-color: black;
+  width: 500px;
   flex: 33%;
   display: flex;
   flex-direction: row;
@@ -28,6 +33,7 @@ body {
 }
 
 .block {
+  background-color: tomato;
   flex: 33%;
   height: 100%;
   border: 1px solid black;
@@ -41,4 +47,9 @@ body {
 
 .block:hover {
   background-color: rgb(250, 147, 129);
+}
+
+.title {
+  margin:  0 auto !important;
+  font-family: 'Josefin Sans', sans-serif;
 }
